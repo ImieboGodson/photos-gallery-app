@@ -13,7 +13,7 @@ interface HomeProps {
   searchParams: IImagesParams;
 }
 
-export default async function Home({ searchParams }: HomeProps) {
+const Home = async ({ searchParams }: HomeProps) => {
   const photos = await getPhotosByTag(searchParams);
 
   if (photos.length === 0) {
@@ -28,9 +28,11 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <ClientOnly>
-      <Suspense fallback={<Loading />}>
-        <HomeClient photos={photos} />
-      </Suspense>
+      {/* <Suspense fallback={<Loading />}> */}
+      <HomeClient photos={photos} />
+      {/* </Suspense> */}
     </ClientOnly>
   );
-}
+};
+
+export default Home;
