@@ -1,30 +1,32 @@
-import Image from "next/image";
 import getPhotos from "./actions/getPhotos";
 import ClientOnly from "./components/ClientOnly";
 import Container from "./components/Container";
 import EmptyState from "./components/EmptyState";
+import HomeClient from "./HomeClient";
+import getCurrentUser from "./actions/getCurrentUser";
 import ImageCard from "./components/cards/ImageCard";
+import getPhotosByTag, { IImagesParams } from "./actions/getPhotosByTag";
 
-export default async function Home() {
-  const photos = await getPhotos();
+interface HomeProps {
+  searchParams: IImagesParams;
+}
 
-  if (!photos) {
+export default async function Home({ searchParams }: HomeProps) {
+  const photos = await getPhotosByTag(searchParams);
+
+  if (photos.length === 0) {
     return (
       <ClientOnly>
-        <EmptyState title="No photos found." />
+        <Container>
+          <EmptyState title="No photos found." showReset />
+        </Container>
       </ClientOnly>
     );
   }
 
   return (
     <ClientOnly>
-      <Container>
-        <div className="pb-8 columns-1 sm:columns-1 md:columns-3 lg:columns-4 xl:columns-4 gap-4">
-          {photos.map((photo: any, index: number) => (
-            <ImageCard key={photo.id} index={index} data={photo} />
-          ))}
-        </div>
-      </Container>
+      <HomeClient photos={photos} />
     </ClientOnly>
   );
 }
